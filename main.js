@@ -15,8 +15,6 @@ let postsLimit = 3;
 let pageNr = 1;
 
 const postListing = () => {
-    let postsLimit = 3;
-    let pageNr = 1;
     const urlToFetch = `${postsUrl}?_limit=${postsLimit}&_page=${pageNr}`;
     fetch(urlToFetch)
         .then((response) => response.json())
@@ -35,15 +33,23 @@ const postListing = () => {
 const loader = document.getElementById('loader');
 
 const showLoader = async () => {
-    loader.classList.add('show');
+    loader.style.display = 'block';
     pageNr++;
     await postListing();
-    loader.classList.remove('show');
+    loader.style.display = 'none';
 };
 
 postListing();
 
 document.addEventListener('scroll', () => {
-    postListing();
     showLoader();
+    //Scroll down, show loader and fetch next set of posts
+    if (
+        document.body.scrollTop + document.documentElement.clientHeight >=
+        document.documentElement.scrollHeight
+    ) {
+        showLoader();
+    } else {
+        loader.classList.remove('show');
+    }
 });
